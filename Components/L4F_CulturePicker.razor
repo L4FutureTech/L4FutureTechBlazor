@@ -1,0 +1,56 @@
+﻿@using System.Globalization
+@using Microsoft.Extensions.Localization
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<RadzenDropDown @bind-Value="@selectedCulture" 
+                TValue="CultureInfo" 
+                Data="localizedSupportedCultures"
+                TextProperty="Key" 
+                ValueProperty="Value" 
+                Change="@ChangeCulture" />
+
+@code {
+    [Parameter]
+    public Dictionary<string, CultureInfo>? supportedCultures { get; set; }
+
+    private CultureInfo? selectedCulture;
+
+    private Dictionary<string, CultureInfo> localizedSupportedCultures = new();
+
+    protected override void OnInitialized()
+    {
+        if (supportedCultures == null)
+        {
+            supportedCultures = new()
+            {
+                { "English", new CultureInfo("en") },
+                { "Deutsch", new CultureInfo("de") },
+                { "Русский", new CultureInfo("ru") },
+                { "Español", new CultureInfo("es") },
+                { "Français", new CultureInfo("fr") },
+                { "Türkçe", new CultureInfo("tr") },
+                { "العربية", new CultureInfo("ar") }
+            };
+        }
+
+        selectedCulture = CultureInfo.CurrentCulture;
+        foreach (var culture in supportedCultures)
+        {
+            localizedSupportedCultures.Add(culture.Key, culture.Value);
+        }
+        StateHasChanged();
+    }
+
+    protected async Task ChangeCulture()
+    {
+        if (CultureInfo.CurrentCulture != selectedCulture)
+        {
+            await JSRuntime.InvokeVoidAsync("blazorCulture.set", selectedCulture!.Name);
+
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        }
+    }
+}

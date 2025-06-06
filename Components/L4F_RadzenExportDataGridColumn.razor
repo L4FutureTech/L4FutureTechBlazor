@@ -1,0 +1,14 @@
+﻿@using L4FutureTechBlazor.Models
+
+@typeparam TItem
+
+@inherits RadzenDataGridColumn<TItem>
+
+@code {
+    [CascadingParameter] public ExportColumnsContainerModel<TItem> ExportColumnsContainer { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ExportColumnsContainer?.Register(this);
+    }
+}

@@ -1,0 +1,23 @@
+﻿@using Microsoft.Extensions.Localization
+
+@inject IStringLocalizer<L4F_Loading_razor> LOC
+
+<div class="rz-m-12">
+    <RadzenRow Gap="1rem">
+        <div class="position-absolute top-50 start-50 translate-middle w-75" style="text-align : center">
+            @(LOC["wait"] + (string.IsNullOrEmpty(Message) ? "" : $" ({(ExtLocalizer != null ? ExtLocalizer[Message] : LOC[Message])})"))
+            <br />
+            <RadzenProgressBar Value="100"
+                               ShowValue="false"
+                               Mode="ProgressBarMode.Indeterminate" />
+        </div>
+    </RadzenRow>
+</div>
+
+@code {
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public IStringLocalizer? ExtLocalizer { get; set; }
+}

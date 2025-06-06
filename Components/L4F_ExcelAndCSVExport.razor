@@ -1,0 +1,188 @@
+﻿@using System.Reflection
+@using System.Text
+@using ClosedXML.Excel
+@using L4FutureTechBlazor.Models
+@using Microsoft.Extensions.Localization
+@using Microsoft.JSInterop
+
+@inject IStringLocalizer<L4F_ExcelAndCSVExport_razor> LOC
+
+@typeparam TItem
+
+@if (!HideExcelButtons)
+{
+    <RadzenButton Text="@LOC["Export Excel"]" Click="@ExportExcelAll" Style="margin-right:10px" />
+    @if (ShowButtonsForVisibleColumns)
+    {
+        <RadzenButton Text="@LOC["Export Excel (visible columns)"]" Click="@ExportExcelVisible" Style="margin-right:10px" />
+    }
+}
+
+@if (!HideCSVButtons)
+{
+    <RadzenButton Text="@LOC["Export CSV"]" Click="@ExportCsv" />
+    @if (ShowButtonsForVisibleColumns)
+    {
+        <RadzenButton Text="@LOC["Export CSV (visible columns)"]" Click="@ExportCsvVisible" />
+    }
+}
+
+@code {
+    [Parameter] public RadzenDataGrid<TItem> Grid { get; set; } = null!;
+    [Parameter] public IEnumerable<TItem> Data { get; set; } = [];
+    [Parameter] public bool ShowButtonsForVisibleColumns { get; set; }
+    [Parameter] public bool HideExcelButtons { get; set; }
+    [Parameter] public bool HideCSVButtons { get; set; }
+    [Inject] IJSRuntime JSRuntime { get; set; }
+    [CascadingParameter] public ExportColumnsContainerModel<TItem> ExportColumnsContainer { get; set; }
+    private List<RadzenDataGridColumn<TItem>> CurrentVisibleColumns = new();
+
+
+    private IEnumerable<RadzenDataGridColumn<TItem>> ColumnsToExport =>
+         ExportColumnsContainer?.Columns ?? Enumerable.Empty<RadzenDataGridColumn<TItem>>();
+
+    private async Task ExportExcelAll()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Export All Columns");
+        var columns = ColumnsToExport.Where(c => !string.IsNullOrEmpty(c.Property)).ToList();
+        int colIndex = 1;
+        foreach (var col in columns)
+        {
+            worksheet.Cell(1, colIndex++).SetValue(col.Title ?? col.Property);
+        }
+        int rowIndex = 2;
+        var dataToExport = Data ?? Grid.Data.Cast<TItem>();
+        foreach (var item in dataToExport)
+        {
+            colIndex = 1;
+            foreach (var col in columns)
+            {
+                var value = GetNestedPropertyValue(item, col.Property);
+                string cellValue = value?.ToString() ?? "";
+                worksheet.Cell(rowIndex, colIndex++).SetValue(cellValue);
+            }
+            rowIndex++;
+        }
+        worksheet.Columns().AdjustToContents();
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+        var base64 = Convert.ToBase64String(stream.ToArray());
+        await JSRuntime.InvokeVoidAsync("downloadFileFromStreamExcelAndCSV", "ExportAll.xlsx", base64);
+    }
+
+    private async Task ExportExcelVisible()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Export Visible Columns");
+        var columns = CurrentVisibleColumns.Where(c => !string.IsNullOrEmpty(c.Property)).ToList();
+        int colIndex = 1;
+        foreach (var col in columns)
+        {
+            worksheet.Cell(1, colIndex++).SetValue(col.Title ?? col.Property);
+        }
+        int rowIndex = 2;
+        var dataToExport = Data ?? Grid.Data.Cast<TItem>();
+        foreach (var item in dataToExport)
+        {
+            colIndex = 1;
+            foreach (var col in columns)
+            {
+                var value = GetNestedPropertyValue(item, col.Property);
+                string cellValue = value?.ToString() ?? "";
+                worksheet.Cell(rowIndex, colIndex++).SetValue(cellValue);
+            }
+            rowIndex++;
+        }
+        worksheet.Columns().AdjustToContents();
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+        var base64 = Convert.ToBase64String(stream.ToArray());
+        await JSRuntime.InvokeVoidAsync("downloadFileFromStreamExcelAndCSV", "ExportVisible.xlsx", base64);
+    }
+
+
+    private async Task ExportCsv()
+    {
+        var sb = new StringBuilder();
+        var columns = ColumnsToExport.Where(c => !string.IsNullOrEmpty(c.Property) && c.Visible).ToList();
+        var header = string.Join(";", columns.Select(c => EscapeCsv(c.Title ?? c.Property)));
+        sb.AppendLine(header);
+        var dataToExport = Data ?? Grid.Data.Cast<TItem>();
+        foreach (var item in dataToExport)
+        {
+            var row = new List<string>();
+            foreach (var col in columns)
+            {
+                var value = GetNestedPropertyValue(item, col.Property);
+                string cellValue = value?.ToString() ?? "";
+                row.Add(EscapeCsv(cellValue));
+            }
+            sb.AppendLine(string.Join(";", row));
+        }
+        var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(sb.ToString()));
+        await JSRuntime.InvokeVoidAsync("downloadFileFromStreamExcelAndCSV", "ExportVisible.csv", base64);
+    }
+
+    private async Task ExportCsvVisible()
+    {
+        var sb = new StringBuilder();
+        var columns = CurrentVisibleColumns.Where(c => !string.IsNullOrEmpty(c.Property)).ToList();
+        var header = string.Join(";", columns.Select(c => EscapeCsv(c.Title ?? c.Property)));
+        sb.AppendLine(header);
+        var dataToExport = Data ?? Grid.Data.Cast<TItem>();
+        foreach (var item in dataToExport)
+        {
+            var row = new List<string>();
+            foreach (var col in columns)
+            {
+                var value = GetNestedPropertyValue(item, col.Property);
+                string cellValue = value?.ToString() ?? "";
+                row.Add(EscapeCsv(cellValue));
+            }
+            sb.AppendLine(string.Join(";", row));
+        }
+        var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(sb.ToString()));
+        await JSRuntime.InvokeVoidAsync("downloadFileFromStreamExcelAndCSV", "ExportVisible.csv", base64);
+    }
+
+    private string EscapeCsv(string input)
+    {
+        if (input.Contains("\"") || input.Contains(";") || input.Contains("\n") || input.Contains("\r"))
+        {
+            return "\"" + input.Replace("\"", "\"\"") + "\"";
+        }
+        return input;
+    }
+
+    private object? GetNestedPropertyValue(object obj, string propertyPath)  
+    {  
+        foreach (var propName in propertyPath.Split('.'))  
+        {  
+            if (obj == null)  
+                return null;  
+
+            var prop = obj.GetType().GetProperty(propName, BindingFlags.Public | BindingFlags.Instance);  
+            if (prop == null)  
+                return null;  
+
+            obj = prop.GetValue(obj);  
+        }  
+        return obj;  
+    }
+
+    private void UpdateVisibleColumns()
+    {
+        CurrentVisibleColumns = ExportColumnsContainer.Columns.Where(c => c.Visible).ToList();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            UpdateVisibleColumns();
+        }
+    }
+}

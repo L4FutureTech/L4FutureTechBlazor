@@ -1,0 +1,23 @@
+﻿@using Microsoft.Extensions.Localization;
+
+@inject DialogService DialogService
+@inject IStringLocalizer<L4F_HtmlEditor_razor> LOC
+
+<RadzenCard>
+    <div class="form-group">
+        <div class="col">
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H5" Class="rz-mb-0">@LOC["Row count"]</RadzenText>
+            <RadzenNumeric @bind-Value=@Row Min="1" Max="20" />
+        </div>
+        <br />
+        <div class="col">
+            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.H5" Class="rz-mb-0">@LOC["Column count"]</RadzenText>
+            <RadzenNumeric @bind-Value=@Column Min="1" Max="10" />
+        </div>
+
+    </div>
+</RadzenCard>
+<br />
+<div class="col">
+    <RadzenButton Click=@(args => SetTable()) Text=@LOC["Create table"] ButtonStyle="ButtonStyle.Primary" style="float:right" />
+</div>

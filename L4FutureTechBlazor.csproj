@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -12,11 +12,45 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.5" />
+	<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+	<PackageReference Include="ClosedXML" Version="0.105.0" />
+	<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.5" />
+	<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.5" />
+	<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.5" />
+	<PackageReference Include="Radzen.Blazor" Version="7.0.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Compile Update="Components\L4F_ExcelAndCSVExport.razor.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>L4F_ExcelAndCSVExport.razor.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Components\L4F_HtmlEditor.razor.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>L4F_HtmlEditor.razor.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Components\L4F_Loading.razor.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>L4F_Loading.razor.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Components\L4F_ExcelAndCSVExport.razor.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>L4F_ExcelAndCSVExport.razor.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Components\L4F_HtmlEditor.razor.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>L4F_HtmlEditor.razor.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Components\L4F_Loading.razor.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>L4F_Loading.razor.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

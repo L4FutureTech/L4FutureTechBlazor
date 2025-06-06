@@ -1,0 +1,41 @@
+﻿@using Microsoft.Extensions.Localization;
+
+@inject DialogService DialogService;
+@inject IStringLocalizer<L4F_HtmlEditor_razor> LOC
+
+<RadzenText TextStyle="TextStyle.H6">@Title</RadzenText>
+<RadzenHtmlEditor @ref=htmlEditor @bind-Value=@htmlValue.Value style="height: 500px;" Change=@OnChange Execute=@OnExecute>
+    <RadzenHtmlEditorUndo Title="@LOC["Undo"]"/>
+    <RadzenHtmlEditorRedo Title="@LOC["Redo"]" />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorBold Title="@LOC["Bold"]" />
+    <RadzenHtmlEditorItalic Title="@LOC["Italic"]" />
+    <RadzenHtmlEditorUnderline Title="@LOC["Underline"]" />
+    <RadzenHtmlEditorStrikeThrough Title="@LOC["Strike through"]" />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorAlignLeft Title="@LOC["Align left"]" />
+    <RadzenHtmlEditorAlignCenter Title="@LOC["Align center"]" />
+    <RadzenHtmlEditorAlignRight Title="@LOC["Align right"]" />
+    <RadzenHtmlEditorJustify Title="@LOC["Justify"]" />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorIndent Title="@LOC["Indent"]" />
+    <RadzenHtmlEditorOutdent Title="@LOC["Outdent"]" />
+    <RadzenHtmlEditorUnorderedList Title="@LOC["Unordered list"]" />
+    <RadzenHtmlEditorOrderedList Title="@LOC["Ordered list"]" />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorColor Title="@LOC["Color"]" />
+    <RadzenHtmlEditorBackground Title="@LOC["Background"]" />
+    <RadzenHtmlEditorRemoveFormat Title="@LOC["Remove format"]" />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorSubscript Title="@LOC["Subscript"]" />
+    <RadzenHtmlEditorSuperscript Title="@LOC["Superscript"]" />
+    <RadzenHtmlEditorSeparator />
+    <RadzenHtmlEditorCustomTool Icon="table" CommandName="InsertTable" Title="@LOC["Table"]" />
+    <RadzenHtmlEditorLink Title="@LOC["Link"]" />
+    <RadzenHtmlEditorUnlink Title="@LOC["Unlink"]" />
+    <RadzenHtmlEditorImage Title="@LOC["Image"]" />
+    <RadzenHtmlEditorFontName Title="@LOC["Font name"]" />
+    <RadzenHtmlEditorFontSize Title="@LOC["Font size"]" />
+    <RadzenHtmlEditorFormatBlock Title="@LOC["Format block"]" />
+</RadzenHtmlEditor>
+ 
