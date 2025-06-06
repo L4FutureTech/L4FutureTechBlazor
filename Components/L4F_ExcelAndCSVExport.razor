@@ -33,8 +33,8 @@
     [Parameter] public bool ShowButtonsForVisibleColumns { get; set; }
     [Parameter] public bool HideExcelButtons { get; set; }
     [Parameter] public bool HideCSVButtons { get; set; }
-    [Inject] IJSRuntime JSRuntime { get; set; }
-    [CascadingParameter] public ExportColumnsContainerModel<TItem> ExportColumnsContainer { get; set; }
+    [Inject] IJSRuntime? JSRuntime { get; set; }
+    [CascadingParameter] public ExportColumnsContainerModel<TItem>? ExportColumnsContainer { get; set; }
     private List<RadzenDataGridColumn<TItem>> CurrentVisibleColumns = new();
 
 
@@ -43,6 +43,11 @@
 
     private async Task ExportExcelAll()
     {
+        if (JSRuntime == null)
+        {
+            throw new InvalidOperationException("JSRuntime is not initialized. Ensure that the component is used within a Blazor application context.");
+        }
+
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Export All Columns");
         var columns = ColumnsToExport.Where(c => !string.IsNullOrEmpty(c.Property)).ToList();
@@ -58,6 +63,11 @@
             colIndex = 1;
             foreach (var col in columns)
             {
+                if (item == null)
+                {
+                    continue;
+                }
+
                 var value = GetNestedPropertyValue(item, col.Property);
                 string cellValue = value?.ToString() ?? "";
                 worksheet.Cell(rowIndex, colIndex++).SetValue(cellValue);
@@ -74,6 +84,11 @@
 
     private async Task ExportExcelVisible()
     {
+        if (JSRuntime == null)
+        {
+            throw new InvalidOperationException("JSRuntime is not initialized. Ensure that the component is used within a Blazor application context.");
+        }
+
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Export Visible Columns");
         var columns = CurrentVisibleColumns.Where(c => !string.IsNullOrEmpty(c.Property)).ToList();
@@ -89,6 +104,10 @@
             colIndex = 1;
             foreach (var col in columns)
             {
+                if (item == null)
+                {
+                    continue;
+                }
                 var value = GetNestedPropertyValue(item, col.Property);
                 string cellValue = value?.ToString() ?? "";
                 worksheet.Cell(rowIndex, colIndex++).SetValue(cellValue);
@@ -106,6 +125,11 @@
 
     private async Task ExportCsv()
     {
+        if (JSRuntime == null)
+        {
+            throw new InvalidOperationException("JSRuntime is not initialized. Ensure that the component is used within a Blazor application context.");
+        }
+
         var sb = new StringBuilder();
         var columns = ColumnsToExport.Where(c => !string.IsNullOrEmpty(c.Property) && c.Visible).ToList();
         var header = string.Join(";", columns.Select(c => EscapeCsv(c.Title ?? c.Property)));
@@ -116,6 +140,10 @@
             var row = new List<string>();
             foreach (var col in columns)
             {
+                if (item == null)
+                {
+                    continue;
+                }
                 var value = GetNestedPropertyValue(item, col.Property);
                 string cellValue = value?.ToString() ?? "";
                 row.Add(EscapeCsv(cellValue));
@@ -128,6 +156,11 @@
 
     private async Task ExportCsvVisible()
     {
+        if (JSRuntime == null)
+        {
+            throw new InvalidOperationException("JSRuntime is not initialized. Ensure that the component is used within a Blazor application context.");
+        }
+
         var sb = new StringBuilder();
         var columns = CurrentVisibleColumns.Where(c => !string.IsNullOrEmpty(c.Property)).ToList();
         var header = string.Join(";", columns.Select(c => EscapeCsv(c.Title ?? c.Property)));
@@ -138,6 +171,10 @@
             var row = new List<string>();
             foreach (var col in columns)
             {
+                if (item == null)
+                {
+                    continue;
+                }
                 var value = GetNestedPropertyValue(item, col.Property);
                 string cellValue = value?.ToString() ?? "";
                 row.Add(EscapeCsv(cellValue));
@@ -168,13 +205,18 @@
             if (prop == null)  
                 return null;  
 
-            obj = prop.GetValue(obj);  
+            obj = prop.GetValue(obj) ?? throw new Exception("prop.GetValue(obj) is null");
         }  
         return obj;  
     }
 
     private void UpdateVisibleColumns()
     {
+        if (ExportColumnsContainer == null)
+        {
+            throw new InvalidOperationException("ExportColumnsContainer is not initialized. Ensure that the component is used within a Blazor application context.");
+        }
+
         CurrentVisibleColumns = ExportColumnsContainer.Columns.Where(c => c.Visible).ToList();
     }
 
