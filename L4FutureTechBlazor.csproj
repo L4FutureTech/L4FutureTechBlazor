@@ -4,17 +4,17 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<PackageId>LFutureTech.public.L4FutureTechBlazor</PackageId>
-	<Version>1.0.1</Version>
-	<Authors>LFutureTech</Authors>
+	<PackageId>L4FutureTech.public.L4FutureTechBlazor</PackageId>
+	<Version>1.0.0</Version>
+	<Authors>L4FutureTech</Authors>
 	<Product>L4FutureTechBlazor</Product>
-    <Company>LFutureTech</Company>
+    <Company>L4FutureTech</Company>
     <Description>Blazor components from L4FutureTech applications.</Description>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageProjectUrl>https://github.com/L4FutureTech/L4FutureTechBlazor</PackageProjectUrl>
 	<RepositoryUrl>https://github.com/L4FutureTech/L4FutureTechBlazor</RepositoryUrl>
-	<Copyright>Copyright (c) LFutureTech</Copyright>
+	<Copyright>Copyright (c) L4Future.Tech</Copyright>
   </PropertyGroup>
 
 
