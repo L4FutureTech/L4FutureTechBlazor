@@ -5,7 +5,7 @@
 @inherits RadzenDataGridColumn<TItem>
 
 @code {
-    [CascadingParameter] public ExportColumnsContainerModel<TItem> ExportColumnsContainer { get; set; }
+    [CascadingParameter] public ExportColumnsContainerModel<TItem>? ExportColumnsContainer { get; set; }
     protected override void OnInitialized()
     {
         base.OnInitialized();
