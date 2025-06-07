@@ -1,5 +1,5 @@
 ﻿namespace L4FutureTechBlazor.Enums;
-public enum AppPlatform
+public enum AppPlatformEnum
 {
     Unknown,
     Android,

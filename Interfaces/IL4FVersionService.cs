@@ -1,5 +1,5 @@
 ﻿namespace L4FutureTechBlazor.Interfaces;
-public interface IVersionService
+public interface IL4FVersionService
 {
     string GetVersion();
     string GetEnvironment();

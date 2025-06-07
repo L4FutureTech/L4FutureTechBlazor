@@ -1,5 +1,5 @@
 ﻿namespace L4FutureTechBlazor.Interfaces;
-public interface IStorageService
+public interface IL4FStorageService
 {
     ValueTask SetItem(string key, string value);
     ValueTask<string?> GetItem(string key);
