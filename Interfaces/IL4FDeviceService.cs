@@ -3,6 +3,6 @@
 namespace L4FutureTechBlazor.Interfaces;
 public interface IL4FDeviceService
 {
-    AppPlatform GetPlatform();
+    AppPlatformEnum GetPlatform();
     bool IsApp();
 }
