@@ -3,7 +3,7 @@ name: Publish Blazor RCL to NuGet
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   publish:
