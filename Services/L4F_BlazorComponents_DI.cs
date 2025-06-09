@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Blazored.LocalStorage;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Radzen;
@@ -12,6 +14,7 @@ public static class L4FutureTechBlazor_DI
 
         _ = services.AddRadzenComponents();
         _ = services.AddLocalization();
+        _ = services.AddBlazoredLocalStorage();
 
         return services;
     }
