@@ -7,7 +7,7 @@ Add in the App.razor / index.html in the header
 
 and in the body 
 ```html
-<script src="_content/L4FutureTech.public.L4FutureTechBlazor/js/l4fcomponentbundle.js"></script>
+<script type="module" src="_content/L4FutureTech.public.L4FutureTechBlazor/js/l4fcomponentloader.js"></script>
 ```
 
 Also in the app.cs / MauiProgram.cs 
