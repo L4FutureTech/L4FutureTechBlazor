@@ -3,6 +3,6 @@ public enum AppPlatformEnum
 {
     Unknown,
     Android,
-    iOS,
+    Ios,
     Web
 }
